@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import average_precision_score, classification_report, accuracy_score
+from sklearn.metrics import average_precision_score, classification_report, accuracy_score, confusion_matrix
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -67,3 +67,6 @@ y_pred = knn.predict(testX)
 print('Precision = {}'.format(average_precision_score(testY, y_pred)))
 print("Accuracy:", accuracy_score(testY, y_pred))
 print("Classification Report:\n", classification_report(testY, y_pred))
+
+cm = confusion_matrix(testY, y_pred)
+print("Confusion Matrix:\n", cm)

@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import average_precision_score, classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline as ImbPipeline
 
@@ -51,3 +51,6 @@ best_model = grid_search.best_estimator_
 y_pred_best = best_model.predict(testX)
 print("Accuracy of the best model on the test set:", accuracy_score(testY, y_pred_best))
 print("Classification Report:\n", classification_report(testY, y_pred_best))
+
+cm = confusion_matrix(testY, y_pred_best = best_model.predict(testX))
+print("Confusion Matrix:\n", cm)

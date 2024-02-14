@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import average_precision_score, classification_report, accuracy_score, confusion_matrix
+#from sklearn.neighbors import KNeighborsClassifier
+from xgboost.sklearn import XGBClassifier
+from sklearn.metrics import average_precision_score, classification_report, accuracy_score
+from xgboost import plot_importance, to_graphviz
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -25,15 +27,12 @@ X.type = X.type.astype(int)
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=0.3, random_state=42)
 
 # Configure and train the KNN classifier
-knn = KNeighborsClassifier(n_neighbors=5)  # You can adjust n_neighbors based on your dataset size and characteristics
-knn.fit(trainX, trainY)  # Fit model to training data
-y_pred = knn.predict(testX)
+weights = (Y == 0).sum() / (1.0 * (Y == 1).sum())
+xgb = XGBClassifier(max_depth = 3, scale_pos_weigh= weights, n_jobs = 4) 
+xgb.fit(trainX, trainY)  # Fit model to training data
+y_pred = xgb.predict(testX)
 
 # Calculate and print the average precision score, accuracy, and classification report
 print('Precision = {}'.format(average_precision_score(testY, y_pred)))
 print("Accuracy:", accuracy_score(testY, y_pred))
 print("Classification Report:\n", classification_report(testY, y_pred))
-
-# Calculate and display the confusion matrix
-cm = confusion_matrix(testY, y_pred)
-print("Confusion Matrix:\n", cm)
