@@ -4,6 +4,8 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from imblearn.over_sampling import SMOTE
+from sklearn.metrics import roc_curve, auc
+import matplotlib.pyplot as plt
 
 # Chargement des données
 data = pd.read_csv('card_credit_fraud.csv')
@@ -52,9 +54,6 @@ print(conf_matrix)
 class_report = classification_report(y_test, y_pred)
 print("Rapport de classification :")
 print(class_report)
-
-from sklearn.metrics import roc_curve, auc
-import matplotlib.pyplot as plt
 
 # Calcul des probabilités prédites
 y_pred_prob = naive_bayes_model.predict_proba(X_test)[:, 1]
