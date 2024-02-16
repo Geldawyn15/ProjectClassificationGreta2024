@@ -34,7 +34,7 @@ pipeline = Pipeline([
 # Define the parameter grid
 param_grid = {
     'classifier__n_estimators': [100, 200],
-    'classifier__max_depth': [3, 5, 7],
+    'classifier__max_depth': [1, 3, 5, 7, 10],
     'classifier__learning_rate': [0.01, 0.1],
     'classifier__scale_pos_weight': [1, (Y == 0).sum() / (Y == 1).sum()]  # Adjust for imbalance
 }
@@ -45,13 +45,26 @@ grid_search = GridSearchCV(pipeline, param_grid, cv=3, scoring='roc_auc', verbos
 # Fit GridSearchCV to the training data
 grid_search.fit(trainX, trainY)
 
+# Analyze the results
+cv_results = pd.DataFrame(grid_search.cv_results_)
+print(cv_results[['param_classifier__n_estimators', 'param_classifier__max_depth', 'mean_train_score', 'mean_test_score']])
+
 # Best parameters found by GridSearchCV
 print("Best Parameters: ", grid_search.best_params_)
 
 # Predictions
-y_pred = grid_search.predict(testX)
+y_pred_train = grid_search.predict(trainX)
 
+print("Training data")
+
+print('Precision = {}'.format(average_precision_score(trainY, y_pred_train)))
+print("Accuracy:", accuracy_score(trainY, y_pred_train))
+print("Classification Report:\n", classification_report(trainY, y_pred_train))
+
+y_pred = grid_search.predict(testX)
 # Performance metrics
+print("-----------------------------------------------------------------------------------g-",)
+print("Testing Data ",)
 print('Precision = {}'.format(average_precision_score(testY, y_pred)))
 print("Accuracy:", accuracy_score(testY, y_pred))
 print("Classification Report:\n", classification_report(testY, y_pred))
