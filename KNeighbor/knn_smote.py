@@ -52,5 +52,5 @@ y_pred_best = best_model.predict(testX)
 print("Accuracy of the best model on the test set:", accuracy_score(testY, y_pred_best))
 print("Classification Report:\n", classification_report(testY, y_pred_best))
 
-cm = confusion_matrix(testY, y_pred_best = best_model.predict(testX))
+cm = confusion_matrix(testY, y_pred_best)
 print("Confusion Matrix:\n", cm)

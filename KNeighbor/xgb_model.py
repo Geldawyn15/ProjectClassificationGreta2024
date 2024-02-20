@@ -13,14 +13,27 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 df = pd.read_csv('card_credit_fraud.csv')
 df = df.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig', 'oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
 
-X = df.loc[(df.type == 'TRANSFER') | (df.type == 'CASH_OUT')]
+#X = df.loc[(df.type == 'TRANSFER') | (df.type == 'CASH_OUT')]
+df['nameOrig'] = df['nameOrig'].str.replace('C', '0', regex=False)
+df['nameOrig'] = df['nameOrig'].str.replace('M', '1', regex=False)
 
-Y = X['isFraud']
-X = X.drop(['isFraud', 'nameOrig', 'nameDest'], axis=1)
+df['nameDest'] = df['nameDest'].str.replace('C', '0', regex=False)
+df['nameDest'] = df['nameDest'].str.replace('M', '1', regex=False)
+
+df['nameOrig'] = df['nameOrig'].astype('category').cat.codes
+df['nameDest'] = df['nameDest'].astype('category').cat.codes
+
+Y = df['isFraud']
+X = df.drop(['isFraud'], axis=1)
 
 X.loc[X.type == 'TRANSFER', 'type'] = 0
 X.loc[X.type == 'CASH_OUT', 'type'] = 1
+X.loc[X.type == 'PAYMENT', 'type'] = 2
+X.loc[X.type == 'CASH_IN', 'type'] = 3
+X.loc[X.type == 'DEBIT', 'type'] = 4
+
 X.type = X.type.astype(int)
+
 
 # Split the dataset (Note: We split before resampling to avoid data leakage)
 trainX, testX, trainY, testY = train_test_split(X, Y, test_size=0.3, random_state=42)
@@ -47,7 +60,7 @@ grid_search.fit(trainX, trainY)
 
 # Analyze the results
 cv_results = pd.DataFrame(grid_search.cv_results_)
-print(cv_results[['param_classifier__n_estimators', 'param_classifier__max_depth', 'mean_train_score', 'mean_test_score']])
+#print(cv_results[['param_classifier__n_estimators', 'param_classifier__max_depth', 'mean_train_score', 'mean_test_score']])
 
 # Best parameters found by GridSearchCV
 print("Best Parameters: ", grid_search.best_params_)
@@ -55,11 +68,13 @@ print("Best Parameters: ", grid_search.best_params_)
 # Predictions
 y_pred_train = grid_search.predict(trainX)
 
-print("Training data")
 
+print("Confusion Matrix:\n", cm)
 print('Precision = {}'.format(average_precision_score(trainY, y_pred_train)))
 print("Accuracy:", accuracy_score(trainY, y_pred_train))
 print("Classification Report:\n", classification_report(trainY, y_pred_train))
+
+
 
 y_pred = grid_search.predict(testX)
 # Performance metrics
