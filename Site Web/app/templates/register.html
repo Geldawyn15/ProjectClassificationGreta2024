@@ -1,37 +1,66 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Register</h1>
-    <form action="" method="post">
+    
+<div class="form">
+  <div class="tab-content">
+    <div id="signup">   
+      <h1 class="white h1title">Enregistrement</h1>
+      
+      <form class="form" action="" method="post"novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
-            {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
-            {% for error in form.password2.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+  
+        <div class="field-wrap">
+          <label>
+            Nom Utilisateur<span class="req">*</span>
+          </label>
+          {{ form.username(size=32) }}<br>
+          {% for error in form.username.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+
+        <div class="field-wrap">
+          <label>
+            Adresse Email<span class="req">*</span>
+          </label>
+          {{ form.email(size=64) }}<br>
+          {% for error in form.email.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        
+        <div class="field-wrap">
+          <label>
+            Mot de passe <span class="req">*</span>
+          </label>
+          {{ form.password(size=32) }}<br>
+          {% for error in form.password.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+          
+        </div>
+
+        <div class="field-wrap">
+          <label>
+            Confirmer le mot de passe<span class="req">*</span>
+          </label>
+          {{ form.password2(size=32) }}<br>
+          {% for error in form.password2.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+
+        <div class="login-links">
+          <div class="white left font-large"> Deja un Compte? <a class="green" href="{{ url_for('login') }}"> Cliquez ici pour se connecter !</a></div>
+      </div>
+        <input id="submit" name="submit" class="button button-block" type="submit" value="S'enregistrer">
+      </form>
+
+    </div>
+      
+  </div>
+    
+</div> 
+
 {% endblock %}

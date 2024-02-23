@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>This is the selection page</h1>
-    
+    <h1 class='h1title'>Historique des Transaction</h1>
+    <ol class="ol-cards alternate" >
+        {% for transaction in transactions %}
+            <a class='selectA' href="{{ url_for('predict', transaction_id=transaction.id) }}">
+                <li>
+                    {% if transaction.isFraud == True%}
+                    <div class="step"><i class="fa fa-credit-card-alt blue" aria-hidden="true"></i></div>
+                    {% else %}
+                    <div class="step"><i class="fa fa-credit-card-alt" aria-hidden="true"></i></div>
+                    {% endif %}
+                    <div class="title">ID: {{transaction.id}}  | Type: {{ types[transaction.type] }}</div>
+                    <div class="content">Amount: ${{transaction.amount}}</div>
+                </li>
+                
+            </a>
+            
+        {% endfor %}
+    </ol>
 {% endblock %}

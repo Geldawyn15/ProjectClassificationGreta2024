@@ -1,19 +1,20 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
 from xgboost.sklearn import XGBClassifier
 from sklearn.metrics import average_precision_score, classification_report, accuracy_score, confusion_matrix
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_auc_score
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Load dataset
-df = pd.read_csv('card_credit_fraud.csv')
+df = pd.read_csv("card_credit_fraud.csv")
 df = df.rename(columns={'oldbalanceOrg':'oldBalanceOrig', 'newbalanceOrig':'newBalanceOrig', 'oldbalanceDest':'oldBalanceDest', 'newbalanceDest':'newBalanceDest'})
 
-#X = df.loc[(df.type == 'TRANSFER') | (df.type == 'CASH_OUT')]
 df['nameOrig'] = df['nameOrig'].str.replace('C', '0', regex=False)
 df['nameOrig'] = df['nameOrig'].str.replace('M', '1', regex=False)
 
@@ -53,7 +54,10 @@ param_grid = {
 }
 
 # Configure GridSearchCV
-grid_search = GridSearchCV(pipeline, param_grid, cv=3, scoring='roc_auc', verbose=2, n_jobs=-1)
+n_splits = 5
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+grid_search = GridSearchCV(pipeline, param_grid, cv=cv, scoring='roc_auc', verbose=2, n_jobs=-1)
 
 # Fit GridSearchCV to the training data
 grid_search.fit(trainX, trainY)
@@ -65,20 +69,10 @@ cv_results = pd.DataFrame(grid_search.cv_results_)
 # Best parameters found by GridSearchCV
 print("Best Parameters: ", grid_search.best_params_)
 
-# Predictions
-y_pred_train = grid_search.predict(trainX)
 
-
-print("Confusion Matrix:\n", cm)
-print('Precision = {}'.format(average_precision_score(trainY, y_pred_train)))
-print("Accuracy:", accuracy_score(trainY, y_pred_train))
-print("Classification Report:\n", classification_report(trainY, y_pred_train))
-
-
-
+print("-----------------------------------------------------------------------------------g-",)
 y_pred = grid_search.predict(testX)
 # Performance metrics
-print("-----------------------------------------------------------------------------------g-",)
 print("Testing Data ",)
 print('Precision = {}'.format(average_precision_score(testY, y_pred)))
 print("Accuracy:", accuracy_score(testY, y_pred))
@@ -87,3 +81,7 @@ print("Classification Report:\n", classification_report(testY, y_pred))
 # Confusion Matrix
 cm = confusion_matrix(testY, y_pred)
 print("Confusion Matrix:\n", cm)
+
+import pickle
+filename='model.pkl'
+pickle.dump(grid_search, open(filename, 'wb'))

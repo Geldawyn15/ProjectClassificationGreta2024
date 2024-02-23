@@ -1,32 +1,35 @@
 <!doctype html>
 <html>
     <head>
-        {% if title %}
-        <title>{{ title }} - Microblog</title>
+        {% if request.path.startswith('/predict/') %}
+            <link rel="stylesheet" href="../static/css/main.css">
+            <link rel="stylesheet" href="../static/css/selection.css">
+            <link rel="stylesheet" href="../static/css/predict.css">
+            <script src="https://use.fontawesome.com/470b91f216.js"></script>
+            <script src="../static/js/jquery/jquery.min.js" charset="utf-8"></script>
+        
         {% else %}
-        <title>Welcome to Microblog</title>
+            <link rel="stylesheet" href="./static/css/main.css">
+            <link rel="stylesheet" href="./static/css/selection.css">
+            <script src="https://use.fontawesome.com/470b91f216.js"></script>
+            <script src="./static/js/jquery/jquery.min.js" charset="utf-8"></script>
+        
         {% endif %}
+        
     </head>
     <body>
-        <div>
-            Microblog:
-            <a href="{{ url_for('index') }}">Home</a>
+        <div class="flex">
+            <div class="bold">
+                Banque Devia:
+            </div>
+            <a class="selectA marginLeft" href="{{ url_for('selection') }}">Selection</a>
             {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
+            <a class="selectA marginLeft" href="{{ url_for('login') }}">Login</a>
             {% else %}
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <a class="selectA marginLeft" href="{{ url_for('logout') }}">Logout</a>
             {% endif %}
         </div>
         <hr>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
         {% block content %}{% endblock %}
     </body>
 </html>

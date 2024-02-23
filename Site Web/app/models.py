@@ -45,9 +45,11 @@ class Client(db.Model):
 class Transaction(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     
+    name: so.Mapped[str] = so.mapped_column(sa.String(64))
+    
     step: so.Mapped[int] = so.mapped_column(sa.Integer())
     
-    type: so.Mapped[str] = so.mapped_column(sa.String(50))
+    type: so.Mapped[int] = so.mapped_column(sa.Integer())
     
     amount: so.Mapped[int] = so.mapped_column(sa.Integer())
     
