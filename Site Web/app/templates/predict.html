@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="movie card-body" id="movie-card">
+    {% if prediction[0][0]*100 <= 80 %}
+    <div class="movie__data" id="movie-data">
+        <div class="movie__poster">
+            <span class="movie__poster--fill">
+                <img src="">
+            </span>
+            <span class="movie__poster--featured">
+                <img src="../../static/Red_X.svg">
+            </span>
+        </div>
+        <div class="movie__details">
+            <h1 class="movie__title">Prediction de Transaction</h1>
+            
+            <h2 class="movie__plot">Nous avons conclu que cette transaction est frauduleux à {{(prediction[0][1]*100)|round(2)}}%</h2>
+        </div>
+    </div>
+    {% else %}
+    <div class="movie__data" id="movie-data">
+        <div class="movie__poster">
+            <span class="movie__poster--fill">
+                <img src="">
+            </span>
+            <span class="movie__poster--featured">
+                <img src="../../static/Green_checkmark.svg">
+            </span>
+        </div>
+        <div class="movie__details">
+            <h1 class="movie__title">Prediction de Transaction</h1>
+            
+            <h2 class="movie__plot">Nous avons conclu que cette transaction est non frauduleux à {{(prediction[0][0]*100)|round(2)}}%</h2>
+        </div>
+    </div>
+
+    {% endif %}
+</div>
+    
+{% endblock %}
